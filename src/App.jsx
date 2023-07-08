@@ -14,6 +14,7 @@ function App() {
   
   const getWeather = async () => {
     try{
+      console.log("city 2" + city);
       const locationData = await axios.get(`https://geocode.maps.co/search?city=${city}`);
       const weatherData = await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${locationData.data[0].lat}&longitude=${locationData.data[0].lon}&hourly=is_day,temperature_2m,apparent_temperature,precipitation_probability,weathercode&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=America%2FNew_York&forecast_days=1`);
       // console.log(locationData.data[0].lat);
@@ -34,7 +35,7 @@ function App() {
     return () => {
       console.log('App closed');
     };
-  }, []);
+  }, [city]);
 
   useEffect(() => {
     const temp = city;
@@ -61,9 +62,12 @@ function App() {
     navigator.geolocation.getCurrentPosition(async (position) => {
       const {latitude, longitude} = position.coords;
       const locationData = await axios.get(`https://geocode.maps.co/reverse?lat=${latitude}&lon=${longitude}`);
+      console.log(locationData.data.address.city || locationData.data.address.town);
       setCity(locationData.data.address.city || locationData.data.address.town);
       console.log("Latitude is :", latitude);
       console.log("Longitude is :", longitude);
+      console.log("city" + city);
+      
       getWeather();
     });
   }
